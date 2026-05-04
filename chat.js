@@ -39,11 +39,10 @@ async function generate() {
     const data = await res.json();
     const full = data.content?.[0]?.text || '';
 
-    // 일본어 / 한국어 분리
-    const koMatch = full.match(/\[KO_TRANSLATION\]([\s\S]*?)\[\/KO_TRANSLATION\]/);
-    currentKo = koMatch ? koMatch[1].trim() : '';
-    currentJp = full.replace(/\[KO_TRANSLATION\][\s\S]*?\[\/KO_TRANSLATION\]/, '').trim();
-
+   // 일본어 / 한국어 분리
+const parts = full.split('---KO---');
+currentJp = parts[0].replace('---JP---', '').trim();
+currentKo = parts[1] ? parts[1].replace('---END---', '').trim() : '';
     box.classList.remove('loading');
     box.innerHTML = `
       <div class="jp-response">${escapeHtml(currentJp)}</div>
