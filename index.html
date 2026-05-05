@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>리브힙 일본어 DM 응답 도우미</title>
+  <title>리브힙 일본어 DM 도우미</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -15,57 +15,80 @@
   <div class="badge">직원 전용</div>
 </header>
 
-<main class="main">
-  <!-- 왼쪽: 고객 메시지 입력 -->
-  <div class="panel">
+<main class="main three-col">
+
+  <!-- 1열: 고객 목록 -->
+  <div class="panel sidebar">
     <div class="panel-header">
       <div class="dot blue"></div>
-      <h2>고객 메시지 (일본어)</h2>
-      <span class="sub">인스타 DM에서 복붙</span>
+      <h2>고객 목록</h2>
+      <button class="icon-btn" onclick="showAddCustomer()">＋</button>
     </div>
-    <div class="panel-body">
-      <textarea
-        class="customer-input"
-        id="customerInput"
-        placeholder="일본어 고객 메시지를 여기에 붙여넣으세요…&#10;&#10;예) はじめまして！リフティングの施術について&#10;詳しく教えていただけますか？"
-      ></textarea>
-
-      <div class="ko-label">📨 고객 메시지 번역</div>
-      <div class="ko-response" id="customerKoBox" style="min-height:60px;background:#fafaf8;border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;font-size:13px;color:#555;line-height:1.7;">—</div>
-
-      <button class="generate-btn" id="generateBtn" onclick="generate()">
-        ✦ 답변 생성하기
-      </button>
-
-      <div class="history-label">최근 문의</div>
-      <div class="history-list" id="historyList">
-        <div style="font-size:12px;color:#ccc;text-align:center;padding:12px 0;">아직 없음</div>
-      </div>
+    <div class="panel-body" style="padding:12px;gap:8px;">
+      <input class="search-input" id="searchInput" placeholder="인스타 ID 검색…" oninput="filterCustomers()">
+      <div id="customerList" class="customer-list"></div>
     </div>
   </div>
 
-  <!-- 오른쪽: 답변 -->
+  <!-- 2열: 대화 내용 -->
   <div class="panel">
     <div class="panel-header">
       <div class="dot green"></div>
-      <h2>AI 생성 답변</h2>
-      <span class="sub">일본어 + 한국어 번역</span>
+      <h2 id="chatTitle">고객을 선택하세요</h2>
+      <span class="sub" id="chatSub"></span>
     </div>
-    <div class="panel-body">
-      <div class="response-box" id="responseBox">
-        <div class="response-empty">왼쪽에 고객 메시지를 붙여넣고<br>답변 생성하기를 눌러주세요</div>
+    <div class="panel-body" style="padding:0;">
+      <div class="message-list" id="messageList">
+        <div class="empty-state">왼쪽에서 고객을 선택하세요</div>
       </div>
-      <div class="action-row">
-        <button class="copy-btn jp" id="copyJpBtn" onclick="copyText('jp')" disabled>
-          📋 일본어 복사
-        </button>
-        <button class="copy-btn ko" id="copyKoBtn" onclick="copyText('ko')" disabled>
-          📋 한국어 번역 복사
-        </button>
+      <div class="input-area">
+        <textarea
+          class="customer-input"
+          id="customerInput"
+          placeholder="고객 DM 내용 붙여넣기…"
+          rows="2"
+        ></textarea>
+        <button class="generate-btn" id="generateBtn" onclick="generate()">✦ 답변 생성</button>
       </div>
     </div>
   </div>
+
+  <!-- 3열: AI 답변 -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:var(--gold)"></div>
+      <h2>AI 답변</h2>
+      <span class="sub">일본어 + 한국어</span>
+    </div>
+    <div class="panel-body">
+      <div class="ko-label">📨 고객 메시지 번역</div>
+      <div class="ko-response" id="customerKoBox" style="min-height:50px;background:#fafaf8;border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;font-size:13px;color:#555;line-height:1.7;margin-bottom:8px;">—</div>
+
+      <div class="response-box" id="responseBox">
+        <div class="response-empty">답변 생성하기를 눌러주세요</div>
+      </div>
+      <div class="action-row">
+        <button class="copy-btn jp" id="copyJpBtn" onclick="copyText('jp')" disabled>📋 일본어 복사</button>
+        <button class="copy-btn ko" id="copyKoBtn" onclick="copyText('ko')" disabled>📋 한국어 복사</button>
+      </div>
+    </div>
+  </div>
+
 </main>
+
+<!-- 고객 추가 모달 -->
+<div class="modal-bg" id="modalBg" onclick="hideModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3>새 고객 추가</h3>
+    <input class="modal-input" id="newInstagramId" placeholder="인스타그램 ID (예: @user_jp)">
+    <input class="modal-input" id="newName" placeholder="이름 (선택)">
+    <textarea class="modal-input" id="newMemo" placeholder="메모 (선택)" rows="2"></textarea>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="hideModal()">취소</button>
+      <button class="modal-btn confirm" onclick="addCustomer()">추가</button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
