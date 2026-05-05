@@ -9,13 +9,11 @@ export default async function handler(req, res) {
   };
 
   if (req.method === "GET") {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/customers?select=*&order=created_at.desc`, { headers });
-    const data = await r.json();
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/customers?select=*&order=created_at.desc`, { headers });    const data = await r.json();
     res.status(200).json(data);
 
   } else if (req.method === "POST") {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/customers`, {
-      method: "POST",
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/customers`, {      method: "POST",
       headers: { ...headers, "Prefer": "return=representation" },
       body: JSON.stringify(req.body)
     });
