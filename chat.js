@@ -187,6 +187,7 @@ async function copyText(type) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customer_id: currentCustomer.id, role: 'assistant', content: text })
       });
+      await new Promise(r => setTimeout(r, 300));
       await loadMessages();
     }
   } else {
