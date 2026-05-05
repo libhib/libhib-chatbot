@@ -1,6 +1,6 @@
-let currentCustomerKo = '';
 let currentJp = '';
 let currentKo = '';
+let currentCustomerKo = '';
 let history = [];
 
 async function generate() {
@@ -15,12 +15,10 @@ async function generate() {
   btn.textContent = '생성 중…';
   document.getElementById('copyJpBtn').disabled = true;
   document.getElementById('copyKoBtn').disabled = true;
+  document.getElementById('customerKoBox').innerHTML = '번역 중…';
 
-  // 로딩
   box.innerHTML = `
-    <div class="typing">
-      <span></span><span></span><span></span>
-    </div>
+    <div class="typing"><span></span><span></span><span></span></div>
     <div style="font-size:12px;color:#aaa;margin-top:8px;">답변 생성 중…</div>
   `;
   box.classList.add('loading');
@@ -40,31 +38,32 @@ async function generate() {
     const data = await res.json();
     const full = data.content?.[0]?.text || '';
 
-   // 일본어 / 한국어 분리
-const parts = full.split('---KO---');
-currentJp = parts[0].replace('---JP---', '').trim();
-const rest = parts[1] ? parts[1].split('---CUSTOMER_KO---') : ['', ''];
-currentKo = rest[0].replace('---END---', '').trim();
-currentCustomerKo = rest[1] ? rest[1].replace('---END---', '').trim() : '';
-currentKo = parts[1] ? parts[1].replace('---END---', '').trim() : '';
+    // 파싱
+    const jpMatch = full.match(/---JP---([\s\S]*?)---KO---/);
+    const koMatch = full.match(/---KO---([\s\S]*?)---CUSTOMER_KO---/);
+    const customerKoMatch = full.match(/---CUSTOMER_KO---([\s\S]*?)---END---/);
+
+    currentJp = jpMatch ? jpMatch[1].trim() : full;
+    currentKo = koMatch ? koMatch[1].trim() : '';
+    currentCustomerKo = customerKoMatch ? customerKoMatch[1].trim() : '';
+
     box.classList.remove('loading');
     box.innerHTML = `
       <div class="jp-response">${escapeHtml(currentJp)}</div>
       <div class="divider"></div>
       <div class="ko-label">🇰🇷 답변 한국어 번역</div>
       <div class="ko-response">${escapeHtml(currentKo)}</div>
-      document.getElementById('customerKoBox').innerHTML = escapeHtml(currentCustomerKo);
     `;
 
+    document.getElementById('customerKoBox').innerHTML = escapeHtml(currentCustomerKo) || '—';
     document.getElementById('copyJpBtn').disabled = false;
     document.getElementById('copyKoBtn').disabled = false;
-
-    // 히스토리 추가
     addHistory(text);
 
   } catch (e) {
     box.classList.remove('loading');
     box.innerHTML = `<div style="color:#e55;font-size:13px;">오류가 발생했습니다. 다시 시도해주세요.</div>`;
+    document.getElementById('customerKoBox').innerHTML = '—';
   }
 
   btn.disabled = false;
@@ -82,7 +81,6 @@ function copyText(type) {
 function addHistory(text) {
   history.unshift(text);
   if (history.length > 10) history.pop();
-
   const list = document.getElementById('historyList');
   list.innerHTML = history.map((h, i) => `
     <div class="history-item" onclick="loadHistory(${i})">
@@ -103,6 +101,7 @@ function showToast(msg) {
 }
 
 function escapeHtml(str) {
+  if (!str) return '';
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -110,7 +109,6 @@ function escapeHtml(str) {
     .replace(/\n/g, '<br>');
 }
 
-// Enter 키 (Ctrl+Enter)
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('customerInput').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.ctrlKey) generate();
