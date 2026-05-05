@@ -6,6 +6,7 @@
   <title>리브힙 일본어 DM 응답 도우미</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <h1>リブヒブクリニック</h1>
 </head>
 <body>
 
@@ -28,6 +29,11 @@
         class="customer-input"
         id="customerInput"
         placeholder="일본어 고객 메시지를 여기에 붙여넣으세요…&#10;&#10;예) はじめまして！リフティングの施術について&#10;詳しく教えていただけますか？"
+        <div class="ko-label">📨 고객 메시지 번역</div>
+        <div class="ko-response" id="customerKoBox" style="min-height:60px;background:#fafaf8;border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;font-size:13px;color:#555;line-height:1.7;">
+          —
+        </div>
+
       ></textarea>
       <button class="generate-btn" id="generateBtn" onclick="generate()">
         ✦ 답변 생성하기

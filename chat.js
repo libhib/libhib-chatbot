@@ -49,13 +49,11 @@ currentCustomerKo = rest[1] ? rest[1].replace('---END---', '').trim() : '';
 currentKo = parts[1] ? parts[1].replace('---END---', '').trim() : '';
     box.classList.remove('loading');
     box.innerHTML = `
-      <div class="ko-label">📨 고객 메시지 번역</div>
-      <div class="ko-response">${escapeHtml(currentCustomerKo)}</div>
-      <div class="divider"></div>
       <div class="jp-response">${escapeHtml(currentJp)}</div>
       <div class="divider"></div>
       <div class="ko-label">🇰🇷 답변 한국어 번역</div>
       <div class="ko-response">${escapeHtml(currentKo)}</div>
+      document.getElementById('customerKoBox').innerHTML = escapeHtml(currentCustomerKo);
     `;
 
     document.getElementById('copyJpBtn').disabled = false;
