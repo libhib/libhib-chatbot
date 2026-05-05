@@ -1,3 +1,4 @@
+let currentCustomerKo = '';
 let currentJp = '';
 let currentKo = '';
 let history = [];
@@ -42,12 +43,18 @@ async function generate() {
    // 일본어 / 한국어 분리
 const parts = full.split('---KO---');
 currentJp = parts[0].replace('---JP---', '').trim();
+const rest = parts[1] ? parts[1].split('---CUSTOMER_KO---') : ['', ''];
+currentKo = rest[0].replace('---END---', '').trim();
+currentCustomerKo = rest[1] ? rest[1].replace('---END---', '').trim() : '';
 currentKo = parts[1] ? parts[1].replace('---END---', '').trim() : '';
     box.classList.remove('loading');
     box.innerHTML = `
+      <div class="ko-label">📨 고객 메시지 번역</div>
+      <div class="ko-response">${escapeHtml(currentCustomerKo)}</div>
+      <div class="divider"></div>
       <div class="jp-response">${escapeHtml(currentJp)}</div>
       <div class="divider"></div>
-      <div class="ko-label">🇰🇷 한국어 번역</div>
+      <div class="ko-label">🇰🇷 답변 한국어 번역</div>
       <div class="ko-response">${escapeHtml(currentKo)}</div>
     `;
 
