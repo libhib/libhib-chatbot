@@ -51,9 +51,11 @@ async function generate() {
 
     box.classList.remove('loading');
     box.innerHTML = `
-      <div class="jp-response" id="jpEditBox" contenteditable="true" style="outline:none;cursor:text;" spellcheck="false">${escapeHtml(currentJp)}</div>      <div class="divider"></div>
-      <div class="ko-label">🇰🇷 답변 한국어 번역</div>
-      <div class="ko-response">${escapeHtml(currentKo)}</div>
+      <div class="jp-response">${escapeHtml(currentJp)}</div>
+      <div class="divider"></div>
+      <div class="ko-label">🇰🇷 답변 한국어 번역 (수정 가능)</div>
+      <div class="ko-response" id="koEditBox" contenteditable="true" style="outline:none;cursor:text;" spellcheck="false">${escapeHtml(currentKo)}</div>
+      <button onclick="retranslate()" style="margin-top:10px;padding:8px 16px;background:#1a1410;color:#c9a96e;border:none;border-radius:8px;cursor:pointer;font-size:12px;">🔄 한국어→일본어 재번역</button>
     `;
 
     document.getElementById('customerKoBox').innerHTML = escapeHtml(currentCustomerKo) || '—';
@@ -115,6 +117,32 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/\n/g, '<br>');
 }
+async function retranslate() {
+  const koText = document.getElementById('koEditBox').innerText.trim();
+  if (!koText) return;
+
+  const box = document.getElementById('responseBox');
+  const jpDiv = box.querySelector('.jp-response');
+  jpDiv.innerHTML = '번역 중…';
+
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 1000,
+      system: '당신은 한국어를 자연스러운 일본어로 번역하는 전문 번역가입니다. 클리닉 상담 답변을 번역합니다. 번역문만 출력하세요.',
+      messages: [{ role: 'user', content: koText }]
+    })
+  });
+
+  const data = await res.json();
+  const newJp = data.content?.[0]?.text || '';
+  currentJp = newJp;
+  jpDiv.innerHTML = escapeHtml(newJp);
+}
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('customerInput').addEventListener('keydown', (e) => {
