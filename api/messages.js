@@ -10,14 +10,11 @@ export default async function handler(req, res) {
 
   if (req.method === "GET") {
     const { customer_id } = req.query;
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/messages?customer_id=eq.${customer_id}&order=created_at.asc`, { headers });
-    const data = await r.json();
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/Messages?customer_id=eq.${customer_id}&order=created_at.asc`, { headers });    const data = await r.json();
     res.status(200).json(data);
 
   } else if (req.method === "POST") {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-      method: "POST",
-      headers: { ...headers, "Prefer": "return=representation" },
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/Messages`, {      headers: { ...headers, "Prefer": "return=representation" },
       body: JSON.stringify(req.body)
     });
     const data = await r.json();
