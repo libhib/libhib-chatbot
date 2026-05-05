@@ -18,8 +18,10 @@ async function generate() {
   document.getElementById('customerKoBox').innerHTML = '번역 중…';
 
   box.innerHTML = `
-    <div class="typing"><span></span><span></span><span></span></div>
-    <div style="font-size:12px;color:#aaa;margin-top:8px;">답변 생성 중…</div>
+    <div class="jp-response" id="jpEditBox" contenteditable="true" style="outline:none;cursor:text;" spellcheck="false">${escapeHtml(currentJp)}</div>
+    <div class="divider"></div>
+    <div class="ko-label">🇰🇷 답변 한국어 번역</div>
+    <div class="ko-response">${escapeHtml(currentKo)}</div>
   `;
   box.classList.add('loading');
 
@@ -71,7 +73,13 @@ async function generate() {
 }
 
 function copyText(type) {
-  const text = type === 'jp' ? currentJp : currentKo;
+  let text;
+  if (type === 'jp') {
+    const el = document.getElementById('jpEditBox');
+    text = el ? el.innerText : currentJp;
+  } else {
+    text = currentKo;
+  }
   if (!text) return;
   navigator.clipboard.writeText(text).then(() => {
     showToast(type === 'jp' ? '일본어 답변 복사 완료! 📋' : '한국어 번역 복사 완료! 📋');
