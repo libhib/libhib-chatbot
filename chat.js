@@ -51,8 +51,7 @@ async function generate() {
 
     box.classList.remove('loading');
     box.innerHTML = `
-      <div class="jp-response">${escapeHtml(currentJp)}</div>
-      <div class="divider"></div>
+      <div class="jp-response" id="jpEditBox" contenteditable="true" style="outline:none;cursor:text;" spellcheck="false">${escapeHtml(currentJp)}</div>      <div class="divider"></div>
       <div class="ko-label">🇰🇷 답변 한국어 번역</div>
       <div class="ko-response">${escapeHtml(currentKo)}</div>
     `;
