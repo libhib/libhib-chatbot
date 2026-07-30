@@ -15,45 +15,26 @@
   <div class="badge">직원 전용</div>
 </header>
 
-<main class="main three-col">
+<main class="main">
 
-  <!-- 1열: 고객 목록 -->
-  <div class="panel sidebar">
-    <div class="panel-header">
-      <div class="dot blue"></div>
-      <h2>고객 목록</h2>
-      <button class="icon-btn" onclick="showAddCustomer()">＋</button>
-    </div>
-    <div class="panel-body" style="padding:12px;gap:8px;">
-      <input class="search-input" id="searchInput" placeholder="인스타 ID 검색…" oninput="filterCustomers()">
-      <div id="customerList" class="customer-list"></div>
-    </div>
-  </div>
-
-  <!-- 2열: 대화 내용 -->
+  <!-- 1열: 고객 DM 입력 -->
   <div class="panel">
     <div class="panel-header">
       <div class="dot green"></div>
-      <h2 id="chatTitle">고객을 선택하세요</h2>
-      <span class="sub" id="chatSub"></span>
+      <h2>고객 DM 내용</h2>
     </div>
-    <div class="panel-body" style="padding:0;">
-      <div class="message-list" id="messageList">
-        <div class="empty-state">왼쪽에서 고객을 선택하세요</div>
-      </div>
-      <div class="input-area">
-        <textarea
-          class="customer-input"
-          id="customerInput"
-          placeholder="고객 DM 내용 붙여넣기…"
-          rows="2"
-        ></textarea>
-        <button class="generate-btn" id="generateBtn" onclick="generate()">✦ 답변 생성</button>
-      </div>
+    <div class="panel-body">
+      <textarea
+        class="customer-input"
+        id="customerInput"
+        placeholder="고객 DM 내용 붙여넣기…"
+        rows="10"
+      ></textarea>
+      <button class="generate-btn" id="generateBtn" onclick="generate()">✦ 답변 생성</button>
     </div>
   </div>
 
-  <!-- 3열: AI 답변 -->
+  <!-- 2열: AI 답변 -->
   <div class="panel">
     <div class="panel-header">
       <div class="dot" style="background:var(--gold)"></div>
@@ -75,20 +56,6 @@
   </div>
 
 </main>
-
-<!-- 고객 추가 모달 -->
-<div class="modal-bg" id="modalBg" onclick="hideModal()">
-  <div class="modal" onclick="event.stopPropagation()">
-    <h3>새 고객 추가</h3>
-    <input class="modal-input" id="newInstagramId" placeholder="인스타그램 ID (예: @user_jp)">
-    <input class="modal-input" id="newName" placeholder="이름 (선택)">
-    <textarea class="modal-input" id="newMemo" placeholder="메모 (선택)" rows="2"></textarea>
-    <div class="modal-btns">
-      <button class="modal-btn cancel" onclick="hideModal()">취소</button>
-      <button class="modal-btn confirm" onclick="addCustomer()">추가</button>
-    </div>
-  </div>
-</div>
 
 <div class="toast" id="toast"></div>
 
